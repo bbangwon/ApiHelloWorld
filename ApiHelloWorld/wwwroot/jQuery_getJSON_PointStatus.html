@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="/lib/jquery/jquery.min.js"></script>
+    <script>
+        var API_URI = "/api/pointstatus";
+
+        function getPointData() {
+            $.getJSON(API_URI, function (data) {
+                $("#gold").val(data.gold);
+                $("#silver").val(data.silver);
+                $("#bronze").val(data.bronze);
+            });
+        }
+
+        $(function () {
+            getPointData();
+        });
+    </script>
+</head>
+<body>
+    <input type="text" name="gold" id="gold" value="" />
+    <input type="text" name="silver" id="silver" value="" />
+    <input type="text" name="bronze" id="bronze" value="" />
+</body>
+</html>
