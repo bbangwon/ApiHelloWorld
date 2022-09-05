@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiHelloWorld.Migrations
 {
-    [DbContext(typeof(PointDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20220904161634_InitDb")]
     partial class InitDb
     {

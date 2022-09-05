@@ -1,4 +1,5 @@
 using ApiHelloWorld.Component;
+using ApiHelloWorld.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<PointDbContext>(
+builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(connectionString));
 
 builder.Services.AddControllersWithViews();
@@ -17,6 +18,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPointRepository, PointRepositoryInMemory>();
 builder.Services.AddScoped<IPointLogRepository, PointLogRepository>();
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
 
 var app = builder.Build();
 
