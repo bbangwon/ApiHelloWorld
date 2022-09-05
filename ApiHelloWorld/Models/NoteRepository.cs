@@ -52,6 +52,11 @@ namespace ApiHelloWorld.Models
             return note;
         }
 
+        public int GetRecordCount()
+        {
+            return this.dbContext.Notes?.Count() ?? 0;
+        }
+
         public Note? Update(Note note)
         {
             if (GetById(note.Id) == null)

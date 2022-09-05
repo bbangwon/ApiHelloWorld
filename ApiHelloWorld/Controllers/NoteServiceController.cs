@@ -47,6 +47,10 @@ namespace ApiHelloWorld.Controllers
             {
                 return NotFound($"아무런 데이터가 없습니다.");
             }
+
+            //헤더에 총 레코드 수를 담아서 출력
+            Response.Headers.Add("X-TotalRecordCount", repository.GetRecordCount().ToString());
+
             return Ok(notes);
         }
 
