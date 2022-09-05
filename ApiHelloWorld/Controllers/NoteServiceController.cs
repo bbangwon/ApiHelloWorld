@@ -33,9 +33,21 @@ namespace ApiHelloWorld.Controllers
             var note = repository.GetById(id);
             if (note == null)
             {
-                return NotFound($"데이터가 없습니다.");
+                return NotFound($"{id}번 데이터가 없습니다.");
             }
-            return Ok(note);
+
+             return Ok(note);
+        }
+
+        [HttpGet("{page}/{pageSize}")]
+        public IActionResult Get(int page = 0, int pageSize = 10)
+        {
+            var notes = repository.GetAllWithPaging(page, pageSize);
+            if (notes == null || !notes.Any())
+            {
+                return NotFound($"아무런 데이터가 없습니다.");
+            }
+            return Ok(notes);
         }
 
         [HttpPost]
@@ -52,10 +64,10 @@ namespace ApiHelloWorld.Controllers
             var updateNote = repository.Update(note);
             if(updateNote == null)
             {
-                return NotFound($"데이터가 없습니다.");
+                return NotFound($"{id}번 데이터가 없습니다.");
             }
 
-            return Ok(updateNote);
+            return NoContent(); //이미 던져준 정보에 모든 값 가지고 있기에..
         }
 
         [HttpDelete("{id}")]
@@ -64,9 +76,9 @@ namespace ApiHelloWorld.Controllers
             var removed = repository.Delete(id);
             if(!removed)
             {
-                return NotFound($"데이터가 없습니다.");
+                return NotFound($"{id}번 데이터가 없습니다.");
             }
-            return Ok();
+            return NoContent();
         }
     }
 }

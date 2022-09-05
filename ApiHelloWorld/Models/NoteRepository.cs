@@ -1,4 +1,5 @@
 ﻿using ApiHelloWorld.Component;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiHelloWorld.Models
 {
@@ -22,34 +23,40 @@ namespace ApiHelloWorld.Models
 
         public bool Delete(int id)
         {
-            var removeNote = this.dbContext.Notes?.SingleOrDefault(x => x.Id == id);
-            if(removeNote != null)
-            {
-                this.dbContext.Notes?.Remove(removeNote);
-                this.dbContext.SaveChanges();
-                return true;
-            }
-            return false;
+            var removeNote = GetById(id);
+            if (removeNote == null)
+                return false;
+
+            this.dbContext.Notes?.Remove(removeNote);
+            this.dbContext.SaveChanges();
+            return true;
         }
 
         public IEnumerable<Note>? GetAll()
         {
-            return this.dbContext.Notes?.OrderByDescending(x => x.Id);
+            return this.dbContext.Notes?.AsNoTracking().OrderByDescending(x => x.Id);
         }
 
-        public List<Note> GetAllWithPaging(int page, int pageSize = 10)
+        public IEnumerable<Note>? GetAllWithPaging(int page, int pageSize = 10)
         {
-            throw new NotImplementedException();
+            var pages = this.dbContext.Notes?.AsNoTracking()
+                            .OrderByDescending(x => x.Id)
+                            .Skip(page * pageSize)
+                            .Take(pageSize);
+            return pages;
         }
 
         public Note? GetById(int id)
         {
-            var note = this.dbContext.Notes?.FirstOrDefault(x => x.Id == id);
+            var note = this.dbContext.Notes?.AsNoTracking().SingleOrDefault(x => x.Id == id);
             return note;
         }
 
-        public Note Update(Note note)
+        public Note? Update(Note note)
         {
+            if (GetById(note.Id) == null)
+                return null;
+            
             this.dbContext.Notes?.Update(note);
             this.dbContext.SaveChanges();
 
