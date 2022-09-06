@@ -9,15 +9,19 @@ namespace ApiHelloWorld.Controllers
     public class NoteServiceController : ControllerBase
     {
         private readonly INoteRepository repository;
+        private readonly ILogger logger;
 
-        public NoteServiceController(INoteRepository repository)
+        public NoteServiceController(INoteRepository repository, ILoggerFactory logger)
         {
             this.repository = repository;
+            this.logger = logger.CreateLogger(nameof(NoteServiceController));
         }
 
         [HttpGet]
         public IActionResult Get()
         {
+            logger.LogInformation("로그 출력해봄");
+
             var notes = repository.GetAll();
             if (notes == null)
             {
