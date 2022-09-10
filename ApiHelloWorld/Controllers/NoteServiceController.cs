@@ -1,4 +1,5 @@
 ﻿using ApiHelloWorld.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace ApiHelloWorld.Controllers
     [ApiVersion("1.0")] //API 버전
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NoteServiceController : ControllerBase
     {
         private readonly INoteRepository repository;
