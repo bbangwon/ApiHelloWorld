@@ -100,4 +100,12 @@ namespace ApiHelloWorld.Controllers
         public Subject? Subject { get; set; }
         public List<Student>? Students { get; set; }
     }
+
+    public class MyRankingServiceTestController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+    }
 }

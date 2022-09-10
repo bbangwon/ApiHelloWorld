@@ -51,12 +51,4 @@ namespace ApiHelloWorld.Controllers
         [Required(ErrorMessage = "Text 속성은 필수입력값입니다.")]
         public string? Text { get; set; }
     }
-
-    public class MyRankingServiceTestController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-    }
 }
