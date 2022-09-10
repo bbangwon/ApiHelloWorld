@@ -43,6 +43,15 @@ builder.Services.AddScoped<IPointRepository, PointRepositoryInMemory>();
 builder.Services.AddScoped<IPointLogRepository, PointLogRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 
+//전체 접속 가능 (Cors)
+builder.Services.AddCors(option =>
+{
+    option.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,7 +73,11 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors();
+
 app.MapControllers();
 app.MapDefaultControllerRoute();
+
+
 
 app.Run();

@@ -184,4 +184,12 @@ namespace ApiHelloWorld.Controllers.V2
             return NoContent();
         }
     }
+
+    public class NoteDemoController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+    }
 }
