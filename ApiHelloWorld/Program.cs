@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IdentityModel.Client;
+using IdentityServer4.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,10 +56,36 @@ builder.Services.AddCors(option =>
     });
 });
 
+builder.Services.AddIdentityServer()
+    .AddDeveloperSigningCredential()
+    .AddInMemoryApiScopes(new List<ApiScope>
+    {
+        new ApiScope("NoteService", "ApiHelloWorld")
+    })
+    .AddInMemoryClients(new List<Client>
+    {
+        new Client
+        {
+            ClientId = "ApiHelloWorld",
+
+            // no interactive user, use the clientid/secret for authentication
+            AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+            // secret for authentication
+            ClientSecrets =
+            {
+                new Secret("ApiHelloWorld.Secret".Sha256())
+            },
+
+            // scopes that client has access to
+            AllowedScopes = { "NoteService" }
+        }
+    });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                options.Authority = "https://localhost:7283";
+                options.Authority = "https://localhost:7274";
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -89,8 +117,24 @@ app.UseAuthorization();
 
 app.UseCors();
 
+app.UseIdentityServer();
+
 app.MapControllers();
 app.MapDefaultControllerRoute();
+
+app.MapGet("/token", async context => {
+    var client = new HttpClient();
+    var disco = await client.GetDiscoveryDocumentAsync("https://localhost:7274");
+    var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+    {
+        Address = disco.TokenEndpoint,
+        ClientId = "ApiHelloWorld",
+        ClientSecret = "ApiHelloWorld.Secret",
+        Scope = "NoteService"
+    });
+
+    await context.Response.WriteAsync($"token : {tokenResponse.AccessToken}");
+});
 
 
 
